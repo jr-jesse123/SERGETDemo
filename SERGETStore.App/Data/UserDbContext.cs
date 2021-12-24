@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SERGETStore.App.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class UserDbContext : IdentityDbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public UserDbContext(DbContextOptions<UserDbContext> options)
             : base(options)
         {
         }

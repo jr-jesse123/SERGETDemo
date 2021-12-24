@@ -1,17 +1,26 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SERGETStore.App.Data;
+using SERGETStore.Data.Contexto;
+using SERGETStore.App.Extentions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+var cfg = builder.Configuration;
+var services = builder.Services;
+
+var userConStr = cfg.GetConnectionString("UserContextConnection");
+var sergetConStr = cfg.GetConnectionString("SergetContextConnection");
+
+services.AddDbContext<UserDbContext>(options => options.UseSqlServer(userConStr));
+services.AddDbContext<SERGETStoreAppContext>(options => options.UseSqlServer(sergetConStr));
+    
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddEntityFrameworkStores<UserDbContext>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
