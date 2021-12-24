@@ -1,22 +1,25 @@
 ﻿using DevIO.Business.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SERGETStore.Data.Extentions;
 
-namespace SERGETStore.Data.Contexto
+namespace SERGETStore.Data.Contexto;
+public class SERGETStoreAppContext : DbContext
 {
-    public class SERGETStoreAppContext : DbContext
+    public SERGETStoreAppContext(DbContextOptions options) : base(options)    {    }
+
+    public DbSet<Produto> Produtos { get; set; }
+    public DbSet<Endereco> Enderecos { get; set; }
+    public DbSet<Fornecedor> Fornecedores { get; set; }
+
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public SERGETStoreAppContext(DbContextOptions options) : base(options)
-        {
+        modelBuilder.DesabilitarCascadingDelete();
 
-        }
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(SERGETStoreAppContext).Assembly);
 
-        public DbSet<Produto> Produtos { get; set; }
-        public DbSet<Endereco> Enderecos { get; set; }
-        public DbSet<Fornecedor> Fornecedores { get; set; }
+
+
+        base.OnModelCreating(modelBuilder);
     }
 }
