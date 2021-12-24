@@ -12,8 +12,6 @@ namespace DevIO.Business.Models
         public decimal Valor { get; set; }
         public DateTime DataCadastro { get; set; }
         public bool Ativo { get; set; }
-
-        /* EF Relations */
         public Fornecedor Fornecedor { get; set; }
     }
 }

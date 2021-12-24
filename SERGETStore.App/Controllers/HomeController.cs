@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SERGETStore.App.Models;
+using SERGETStore.App.ViewModels;
 using System.Diagnostics;
 
 namespace SERGETStore.App.Controllers

@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace DevIO.Business.Models
+﻿namespace SERGETStore.App.ViewModels
 {
-    public class Endereco : Entity
+    public class EnderecoViewModel
     {
         public Guid FornecedorId { get; set; }
         public string Logradouro { get; set; }
@@ -12,6 +10,8 @@ namespace DevIO.Business.Models
         public string Bairro { get; set; }
         public string Cidade { get; set; }
         public string Estado { get; set; }
+
+        /* EF Relation */
         public Fornecedor Fornecedor { get; set; }
     }
 }

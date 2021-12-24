@@ -1,4 +1,4 @@
-namespace SERGETStore.App.Models
+namespace SERGETStore.App.ViewModels
 {
     public class ErrorViewModel
     {
