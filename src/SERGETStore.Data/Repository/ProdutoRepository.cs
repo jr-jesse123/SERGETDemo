@@ -16,7 +16,8 @@ namespace SERGETStore.Data.Repository
 
         public ProdutoRepository(SERGETStoreAppContext db) : base(db)
         {
-            _produtosComFornecedores = Db.Produtos.AsNoTracking().Include(p => p.Fornecedor);
+            _produtosComFornecedores = 
+                Db.Produtos.AsNoTracking().Include(p => p.Fornecedor);
         }
 
         //TODO: TESTAR
@@ -24,12 +25,14 @@ namespace SERGETStore.Data.Repository
         {
             //return await Db.Produtos.AsNoTracking().Include(p => p.Fornecedor)
             //    .FirstOrDefaultAsync(p => p.Id == fornecedorId);
-            return await  _produtosComFornecedores.FirstOrDefaultAsync(p => p.Id == fornecedorId);
+            return await  _produtosComFornecedores
+                .FirstOrDefaultAsync(p => p.Id == fornecedorId);
         }
         //TODO: TESTAR
         public async Task<IEnumerable<Produto>> ObterProdutosFornecedores()
         {
-            return await _produtosComFornecedores.OrderBy(p => p.Nome).ToListAsync();
+            return await _produtosComFornecedores
+                .OrderBy(p => p.Nome).ToListAsync();
         }
         //TODO: TESTAR
         public async Task<IEnumerable<Produto>> ObterProdutosPorFornecedor(Guid fornecedorId)

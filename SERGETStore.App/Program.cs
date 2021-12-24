@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using SERGETStore.App.Data;
 using SERGETStore.Data.Contexto;
 using SERGETStore.App.Extentions;
+using SERGETStore.Business.Interfaces;
+using SERGETStore.Data.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,11 @@ var sergetConStr = cfg.GetConnectionString("SergetContextConnection");
 
 services.AddDbContext<UserDbContext>(options => options.UseSqlServer(userConStr));
 services.AddDbContext<SERGETStoreAppContext>(options => options.UseSqlServer(sergetConStr));
+
+services.AddScoped<IProdutoRepository, ProdutoRepository>();
+services.AddScoped<IFornecedorRepository, FornecedorRepository>();  
+services.AddScoped<IEnderecoRepository, EnderecoRepository>();
+
     
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
