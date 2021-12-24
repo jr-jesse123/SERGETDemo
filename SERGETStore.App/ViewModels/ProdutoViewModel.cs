@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-
+using static SERGETStore.App.ViewModels.Msgs;
 namespace SERGETStore.App.ViewModels
 {
     public class ProdutoViewModel
     {
-        const string msgErroTamanhoMaximo = "O campo {0} precisa ter entre {2} e {1} caracteres";
-        const string msgCampoObrigatorio = "O campo {0} é obrigatório";
+        
         [Key]
         public Guid Id { get; set; }
         [Required]
