@@ -3,153 +3,191 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using DevIO.Business.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SERGETStore.App.Data;
 using SERGETStore.App.ViewModels;
+using SERGETStore.Business.Interfaces;
 
 namespace SERGETStore.App.Controllers
 {
+
     public class ProdutosController : Controller
     {
-        private readonly UserDbContext _context;
+        private readonly IProdutoRepository produtoRepository;
+        private readonly IFornecedorRepository fornecedorRepository;
+        private readonly IMapper mapper;
 
-        public ProdutosController(UserDbContext context)
+        public ProdutosController(
+                IProdutoRepository produtoRepository,
+                IFornecedorRepository fornecedorRepository,
+                IMapper mapper)
         {
-            _context = context;
+            this.produtoRepository = produtoRepository;
+            this.fornecedorRepository = fornecedorRepository;
+            this.mapper = mapper;
         }
 
-        // GET: Produtos
+
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ProdutoViewModel.ToListAsync());
+            var produtos = await produtoRepository.ObterProdutosFornecedores();
+            var produtosViewModel = mapper.Map<IEnumerable<ProdutoViewModel>>(produtos);
+            
+            return View(produtosViewModel);
         }
 
-        // GET: Produtos/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var produtoViewModel = await _context.ProdutoViewModel
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var produtoViewModel = await await ObterProduto(id);
+                
             if (produtoViewModel == null)
-            {
                 return NotFound();
-            }
-
+            
             return View(produtoViewModel);
         }
 
-        // GET: Produtos/Create
-        public IActionResult Create()
+        
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var fornecedores = await ObterFornecedores();
+            var produtoViewModel = new ProdutoViewModel() { Fornecedores = fornecedores };
+            return View(produtoViewModel);
         }
 
-        // POST: Produtos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Descricao,Imagem,Valor,Ativo")] ProdutoViewModel produtoViewModel)
+        public async Task<IActionResult> Create(ProdutoViewModel produtoViewModel)
         {
-            if (ModelState.IsValid)
-            {
-                produtoViewModel.Id = Guid.NewGuid();
-                _context.Add(produtoViewModel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+
+            //TODO: ADICIONAR UPLOAD DE IMAGEM
+
+            produtoViewModel.Fornecedores = await ObterFornecedores();
+
+            if (!ModelState.IsValid)
+                return View(produtoViewModel);
+
+            var produto = mapper.Map<Produto>(produtoViewModel);
+
+            await produtoRepository.Adiciontar(produto);
+            
             return View(produtoViewModel);
         }
 
-        // GET: Produtos/Edit/5
+        
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var produtoViewModel = await _context.ProdutoViewModel.FindAsync(id);
+            var produtoViewModel = await ObterProdutoViewModel(id.Value);
+
             if (produtoViewModel == null)
-            {
                 return NotFound();
-            }
+            
             return View(produtoViewModel);
         }
 
-        // POST: Produtos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Nome,Descricao,Imagem,Valor,Ativo")] ProdutoViewModel produtoViewModel)
+        public async Task<IActionResult> Edit(Guid id, ProdutoViewModel produtoViewModel)
         {
             if (id != produtoViewModel.Id)
-            {
                 return NotFound();
-            }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(produtoViewModel);
+
+            var produto = mapper.Map<Produto>(produtoViewModel);
+            try
             {
-                try
-                {
-                    _context.Update(produtoViewModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProdutoViewModelExists(produtoViewModel.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await produtoRepository.Atualizar(produto);
             }
-            return View(produtoViewModel);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!await ProdutoExists(produtoViewModel.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+           
         }
 
-        // GET: Produtos/Delete/5
+
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
-            var produtoViewModel = await _context.ProdutoViewModel
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (produtoViewModel == null)
-            {
-                return NotFound();
-            }
+            var produtoVM = await ObterProdutoViewModel(id.Value);
 
-            return View(produtoViewModel);
+            if (produtoVM is null)
+                 return NotFound();
+           
+            //TODO: DELETAR
+            return View(produtoVM);
         }
 
-        // POST: Produtos/Delete/5
+        
+        //TODO: ALTERAR DELETES PARA HTTPDELETE
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var produtoViewModel = await _context.ProdutoViewModel.FindAsync(id);
-            _context.ProdutoViewModel.Remove(produtoViewModel);
-            await _context.SaveChangesAsync();
+            
+            var produtoVM = await ObterProdutoViewModel(id);
+
+            if (produtoVM is null)
+                return NotFound();
+
+            await produtoRepository.Remover(id);
+
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProdutoViewModelExists(Guid id)
+       
+
+        //TODO: PENSAR EM ENVIAR ESTES MÉTODOS PARA HELPER PÚBLICO PARA SEREM TESTADOS.
+        private async Task<ProdutoViewModel> ObterProdutoViewModel(Guid id)
         {
-            return _context.ProdutoViewModel.Any(e => e.Id == id);
+            var fornecedores = await produtoRepository.ObterTodos();
+            var prodtuoFornecedor = await produtoRepository.ObterProdutoE_Fornecedor(id);
+            var produtoViewModel = mapper.Map<ProdutoViewModel>(prodtuoFornecedor);
+
+            produtoViewModel.Fornecedores = mapper.Map<IEnumerable<FornecedorViewModel>>(fornecedores);
+            return produtoViewModel;
+        }
+
+        //private async Task<ProdutoViewModel> PopularFornecedores(ProdutoViewModel produto)
+        //{
+        //    //var produto = mapper.Map<ProdutoViewModel>(await produtoRepository.ObterProdutoE_Fornecedor(id));
+        //    var fornecedores = await produtoRepository.ObterTodos();
+        //    produto.Fornecedores = mapper.Map<IEnumerable<FornecedorViewModel>>(fornecedores);
+        //    return produto;
+        //}
+
+        private async Task<IEnumerable<FornecedorViewModel>> ObterFornecedores()
+        {
+            var fornecedores = await fornecedorRepository.ObterTodos();
+            var fornecedoresVM = mapper.Map<IEnumerable<FornecedorViewModel>>(fornecedores);
+            return fornecedoresVM;
+        }
+
+        private async Task<bool> ProdutoExists(Guid id)
+        {
+            return await produtoRepository.ObterPorId(id) is not null;
         }
     }
 }
