@@ -25,6 +25,7 @@ namespace SERGETStore.App.ViewModels
         [StringLength(1000,ErrorMessage = msgErroTamanhoMaximo)]
         public string Descricao { get; set; }
         
+        [DisplayName("Imagem do Produto")]
         public IFormFile ImagemUpload { get; set; }
         public string Imagem { get; set; }
         [Required(ErrorMessage = msgCampoObrigatorio)]
