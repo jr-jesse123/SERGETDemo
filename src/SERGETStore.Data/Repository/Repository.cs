@@ -52,9 +52,14 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
     {
         return await Db.SaveChangesAsync();
     }
+    public async Task<List<TEntity>> ObterTodos()
+    {
+        return await DbSet.ToListAsync();
+    }
 
     public void Dispose()
     {
         Db?.Dispose();
     }
+
 }
