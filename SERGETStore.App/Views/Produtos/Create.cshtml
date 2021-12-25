@@ -1,17 +1,31 @@
 ﻿@model SERGETStore.App.ViewModels.ProdutoViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Novo Produto";
 }
 
-<h1>Create</h1>
+<!--TODO: verificar estilo inline para baixar todas as páginas-->
+<h1 style="padding-top:50px">@ViewData["Title"]</h1>
 
-<h4>ProdutoViewModel</h4>
+
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form enctype="multipart/form-data" asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="FornecedorId" class="control-label"></label>
+                <select asp-for="FornecedorId" class="form-select"
+                        asp-items="@(new SelectList(Model.Fornecedores, "Id", "Nome"))">
+                    <option></option>
+                </select>
+
+                <span asp-validation-for="FornecedorId" class="text-danger"></span>
+            </div>
+
+
+
             <div class="form-group">
                 <label asp-for="Nome" class="control-label"></label>
                 <input asp-for="Nome" class="form-control" />
@@ -23,10 +37,39 @@
                 <span asp-validation-for="Descricao" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Imagem" class="control-label"></label>
-                <input asp-for="Imagem" class="form-control" />
-                <span asp-validation-for="Imagem" class="text-danger"></span>
+                
+                    <label asp-for="ImagemUpload"  class="form-label"></label>
+                    <input type="file" class="form-control" id="ImagemUpload" 
+                            asp-for="ImagemUpload" />
+                    @*<label data-browse="Procurar" style="width: 400px" class="form-label" for="ImagemUpload" >
+                    </label>*@
+                    @*<label style="display: none" id="img_none"/>*@
+                
+                <span asp-validation-for="ImagemUpload" class="text-danger"></span>
             </div>
+
+@*
+            <div class="mb-3">
+              <label data-browse="Procurar" for="formFile" class="form-label">teste</label>
+              <input class="form-control" type="file" id="formFile">
+              <label style="display: none" id="img_none"/>
+              <span asp-validation-for="ImagemUpload" class="text-danger"></span>
+            </div>
+
+            <input type="file" id="files" class="hidden"/>
+            <label for="files">Select file</label>
+
+
+            <div class="input-group mb-3">
+                <input type="file" data-browse="Procurar"  class="form-control" id="inputGroupFile02">
+                <label class="input-group-text" for="inputGroupFile02">Upload</label>
+            </div>
+
+            <div>
+              <label for="files" class="btn">Select Image</label>
+              <input id="files" style="visibility:hidden;" type="file">
+            </div>*@
+
             <div class="form-group">
                 <label asp-for="Valor" class="control-label"></label>
                 <input asp-for="Valor" class="form-control" />
@@ -38,16 +81,36 @@
                 </label>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="cADASTRAR" class="btn btn-primary" />
+
+                <a asp-action="Index">Voltar</a>
             </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $("#ImagemUpload").attr("data-val-required","Adicione uma imagem");
+    </script>
+
+
+
+@*
+    <script>
+        $("#ImagemUpload").attr("data-val", "false");
+    </script>*@
+
+   @* <script>
+        $("#ImagemUpload").change(function (){
+            $("#img_none").text(this.files[0].name);
+            $("#img_none")[0].style.display = 'block';
+        });
+
+        $("#ImagemUpload").attr("data-val", "true");
+        $("#ImagemUpload").attr("data-val-required","Preencha o campo Imagem");
+    </script>
+*@
+
 }

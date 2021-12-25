@@ -8,10 +8,18 @@ namespace SERGETStore.App.ViewModels
         
         [Key]
         public Guid Id { get; set; }
-        [Required]
+
+
+        [Required(ErrorMessage = Msgs.msgCampoObrigatorio)]
+        [DisplayName("Fornecedor")]
+        public Guid FornecedorId { get; set; }
+
+        [Required(ErrorMessage = Msgs.msgCampoObrigatorio)]
         [StringLength(200,
             ErrorMessage =Msgs.msgErroTamanhoMaximo,MinimumLength =2)]
         public string Nome { get; set; }
+
+
         [DisplayName("Descrição")]
         [Required(ErrorMessage = msgCampoObrigatorio, AllowEmptyStrings =false)]
         [StringLength(1000,ErrorMessage = msgErroTamanhoMaximo)]
