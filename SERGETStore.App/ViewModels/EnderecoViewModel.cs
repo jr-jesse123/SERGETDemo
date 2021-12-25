@@ -16,7 +16,7 @@ namespace SERGETStore.App.ViewModels
         [StringLength(50, ErrorMessage = Msgs.msgErroTamanhoMaximo, MinimumLength = 1)]
         public string Numero { get; set; }
 
-        public string Complemento { get; set; }
+        public string Complemento { get; set; } = "";
 
         [Required(ErrorMessage = Msgs.msgCampoObrigatorio)]
         [StringLength(100, ErrorMessage = Msgs.msgErroTamanhoMaximo, MinimumLength = 2)]

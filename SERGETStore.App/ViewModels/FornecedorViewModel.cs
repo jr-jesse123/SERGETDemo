@@ -21,11 +21,12 @@ public class FornecedorViewModel
     public int TipoFornecedor { get; set; }
 
     public EnderecoViewModel Endereco { get; set; }
+
     [DisplayName("Ativo?")]
 
     public bool Ativo { get; set; }
 
-    public IEnumerable<ProdutoViewModel> Produtos { get; set; }
+    public IEnumerable<ProdutoViewModel> Produtos { get; set; } = new List<ProdutoViewModel>();
 }
 
 #pragma warning restore CS8618 // O campo não anulável precisa conter um valor não nulo ao sair do construtor. Considere declará-lo como anulável.
