@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SERGETStore.App.ViewModels;
 
 namespace SERGETStore.App.Data
 {
@@ -9,5 +10,6 @@ namespace SERGETStore.App.Data
             : base(options)
         {
         }
+        public DbSet<SERGETStore.App.ViewModels.FornecedorViewModel> FornecedorViewModel { get; set; }
     }
 }

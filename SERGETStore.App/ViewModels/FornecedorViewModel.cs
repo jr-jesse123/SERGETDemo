@@ -8,17 +8,23 @@ public class FornecedorViewModel
 {
     [Key]
     public Guid Id { get; set; }
+
     [Required(ErrorMessage = Msgs.msgCampoObrigatorio)]
     [StringLength(100,ErrorMessage = Msgs.msgErroTamanhoMaximo)]
     public string Nome { get; set; }
+
     [Required(ErrorMessage = Msgs.msgCampoObrigatorio)]
     [StringLength(14, ErrorMessage = Msgs.msgErroTamanhoMaximo)]
     public string Documento { get; set; }
+
     [DisplayName("Tipo")]
     public int TipoFornecedor { get; set; }
+
     public EnderecoViewModel Endereco { get; set; }
     [DisplayName("Ativo?")]
+
     public bool Ativo { get; set; }
+
     public IEnumerable<ProdutoViewModel> Produtos { get; set; }
 }
 

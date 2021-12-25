@@ -17,6 +17,9 @@ var sergetConStr = cfg.GetConnectionString("SergetContextConnection");
 services.AddDbContext<UserDbContext>(options => options.UseSqlServer(userConStr));
 services.AddDbContext<SERGETStoreAppContext>(options => options.UseSqlServer(sergetConStr));
 
+
+services.AddAutoMapper(typeof(Program));
+
 services.AddScoped<IProdutoRepository, ProdutoRepository>();
 services.AddScoped<IFornecedorRepository, FornecedorRepository>();  
 services.AddScoped<IEnderecoRepository, EnderecoRepository>();

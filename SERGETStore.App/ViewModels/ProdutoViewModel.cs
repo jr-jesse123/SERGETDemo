@@ -10,14 +10,14 @@ namespace SERGETStore.App.ViewModels
         public Guid Id { get; set; }
         [Required]
         [StringLength(200,
-            ErrorMessage =,MinimumLength =2)]
+            ErrorMessage =Msgs.msgErroTamanhoMaximo,MinimumLength =2)]
         public string Nome { get; set; }
         [DisplayName("Descrição")]
         [Required(ErrorMessage = msgCampoObrigatorio, AllowEmptyStrings =false)]
         [StringLength(1000,ErrorMessage = msgErroTamanhoMaximo)]
         public string Descricao { get; set; }
         
-        public IFormFile ImagemUpload { get; set; }
+        //public IFormFile ImagemUpload { get; set; }
         public string Imagem { get; set; }
         [Required(ErrorMessage = msgCampoObrigatorio)]
         public decimal Valor { get; set; }
