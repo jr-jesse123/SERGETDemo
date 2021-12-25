@@ -17,7 +17,7 @@ namespace SERGETStore.App.ViewModels
         [StringLength(1000,ErrorMessage = msgErroTamanhoMaximo)]
         public string Descricao { get; set; }
         
-        //public IFormFile ImagemUpload { get; set; }
+        public IFormFile ImagemUpload { get; set; }
         public string Imagem { get; set; }
         [Required(ErrorMessage = msgCampoObrigatorio)]
         public decimal Valor { get; set; }
@@ -26,5 +26,9 @@ namespace SERGETStore.App.ViewModels
         [DisplayName("Ativo?")]
         public bool Ativo { get; set; }
         public FornecedorViewModel Fornecedor { get; set; }
+        /// <summary>
+        /// Lista de fornecedores disponíveis para escolha durante edição
+        /// </summary>
+        public IEnumerable<FornecedorViewModel> Fornecedores { get; set; }
     }
 }
