@@ -10,6 +10,7 @@ namespace SERGETStore.App.Data
             : base(options)
         {
         }
-        public DbSet<SERGETStore.App.ViewModels.FornecedorViewModel> FornecedorViewModel { get; set; }
+        public DbSet<SERGETStore.App.ViewModels.ProdutoViewModel> ProdutoViewModel { get; set; }
+        
     }
 }
