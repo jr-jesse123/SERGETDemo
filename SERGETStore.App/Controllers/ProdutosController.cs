@@ -40,12 +40,14 @@ namespace SERGETStore.App.Controllers
             return View(produtosViewModel);
         }
 
+
+        //TODO: TRATAR OS NULÁVEIS ATRAVÉS DE FILTERS
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
                 return NotFound();
 
-            var produtoViewModel = await await ObterProduto(id);
+            var produtoViewModel = await ObterProdutoViewModelComFornecedores(id.Value);
                 
             if (produtoViewModel == null)
                 return NotFound();
@@ -53,7 +55,6 @@ namespace SERGETStore.App.Controllers
             return View(produtoViewModel);
         }
 
-        
         public async Task<IActionResult> Create()
         {
             var fornecedores = await ObterFornecedores();
@@ -87,7 +88,7 @@ namespace SERGETStore.App.Controllers
             if (id == null)
                 return NotFound();
 
-            var produtoViewModel = await ObterProdutoViewModel(id.Value);
+            var produtoViewModel = await ObterProdutoViewModelComFornecedores(id.Value);
 
             if (produtoViewModel == null)
                 return NotFound();
@@ -131,7 +132,7 @@ namespace SERGETStore.App.Controllers
             if (id == null)
                 return NotFound();
 
-            var produtoVM = await ObterProdutoViewModel(id.Value);
+            var produtoVM = await ObterProdutoViewModelComFornecedores(id.Value);
 
             if (produtoVM is null)
                  return NotFound();
@@ -147,7 +148,7 @@ namespace SERGETStore.App.Controllers
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             
-            var produtoVM = await ObterProdutoViewModel(id);
+            var produtoVM = await ObterProdutoViewModelComFornecedores(id);
 
             if (produtoVM is null)
                 return NotFound();
@@ -158,9 +159,8 @@ namespace SERGETStore.App.Controllers
         }
 
        
-
         //TODO: PENSAR EM ENVIAR ESTES MÉTODOS PARA HELPER PÚBLICO PARA SEREM TESTADOS.
-        private async Task<ProdutoViewModel> ObterProdutoViewModel(Guid id)
+        private async Task<ProdutoViewModel> ObterProdutoViewModelComFornecedores(Guid id)
         {
             var fornecedores = await produtoRepository.ObterTodos();
             var prodtuoFornecedor = await produtoRepository.ObterProdutoE_Fornecedor(id);
@@ -185,9 +185,20 @@ namespace SERGETStore.App.Controllers
             return fornecedoresVM;
         }
 
+        //private async Task<ProdutoViewModel> ObterProdutoViewModel(Guid id)
+        //{
+        //    var produto = await produtoRepository.ObterPorId(id);
+        //    var produtoVm = mapper.Map<ProdutoViewModel>(produto);
+        //    return produtoVm;
+        //}
+
         private async Task<bool> ProdutoExists(Guid id)
         {
             return await produtoRepository.ObterPorId(id) is not null;
         }
+
+
+        
+
     }
 }
