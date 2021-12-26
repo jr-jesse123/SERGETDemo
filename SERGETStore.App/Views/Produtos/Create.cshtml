@@ -33,19 +33,16 @@
             </div>
             <div class="form-group">
                 <label asp-for="Descricao" class="control-label"></label>
-                <input asp-for="Descricao" class="form-control" />
+                <textarea asp-for="Descricao" class="form-control" ></textarea>
                 <span asp-validation-for="Descricao" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 
                     <label asp-for="ImagemUpload"  class="form-label"></label>
                     <input type="file" class="form-control" id="ImagemUpload" 
                             asp-for="ImagemUpload" />
-                    @*<label data-browse="Procurar" style="width: 400px" class="form-label" for="ImagemUpload" >
-                    </label>*@
-                    @*<label style="display: none" id="img_none"/>*@
-                
-                <span asp-validation-for="ImagemUpload" class="text-danger"></span>
+                    <span asp-validation-for="ImagemUpload" class="text-danger"></span>
             </div>
 
             <div class="form-group">
