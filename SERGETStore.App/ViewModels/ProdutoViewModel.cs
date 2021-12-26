@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using SERGETStore.App.Extentions;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using static SERGETStore.App.ViewModels.Msgs;
 namespace SERGETStore.App.ViewModels
@@ -29,7 +30,11 @@ namespace SERGETStore.App.ViewModels
         public IFormFile? ImagemUpload { get; set; } 
         
         public string? Imagem { get; set; } 
-        [Required(ErrorMessage = msgCampoObrigatorio)]
+
+
+
+        [Moeda]
+         [Required(ErrorMessage = msgCampoObrigatorio)]
         public decimal Valor { get; set; }
         [ScaffoldColumn(false)]
         public DateTime DataCadastro { get; set; }
