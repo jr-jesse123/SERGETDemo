@@ -10,17 +10,19 @@ namespace SERGETStore.App.Controllers;
 
 public class FornecedoresController : Controller
 {
-    private readonly IFornecedorRepository repository;
+    private readonly IFornecedorRepository fornecedorRepository;
+    private readonly IEnderecoRepository enderecoRepository;
     private readonly IMapper mapper;
-    public FornecedoresController(IFornecedorRepository repository, IMapper mapper)
+    public FornecedoresController(IFornecedorRepository repository, IMapper mapper, IEnderecoRepository enderecoRepository)
     {
-        this.repository = repository;
+        this.fornecedorRepository = repository;
         this.mapper = mapper;
+        this.enderecoRepository = enderecoRepository;
     }
 
     public async Task<IActionResult> Index()
     {
-        var produtos = await repository.ObterTodos();
+        var produtos = await fornecedorRepository.ObterTodos();
         var produtosVM = mapper.Map<IEnumerable<FornecedorViewModel>>(produtos);
         return View(produtosVM);
         //return View(await repository.ObterTodos());
@@ -60,7 +62,7 @@ public class FornecedoresController : Controller
             return View(fornecedorViewModel);
 
         var fornecedor = mapper.Map<Fornecedor>(fornecedorViewModel);
-        await repository.Adiciontar(fornecedor);
+        await fornecedorRepository.Adiciontar(fornecedor);
 
         return RedirectToAction(nameof(Index));
     }
@@ -96,7 +98,7 @@ public class FornecedoresController : Controller
 
         try
         {
-            await repository.Atualizar(fornecedor);
+            await fornecedorRepository.Atualizar(fornecedor);
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -137,22 +139,72 @@ public class FornecedoresController : Controller
         if (fornecedorViewModel is null)
             return NotFound();
 
-        await repository.Remover(id);
+        await fornecedorRepository.Remover(id);
 
         return RedirectToAction(nameof(Index));
     }
 
+    public async Task<IActionResult> ObterEndereco(Guid id)
+    {
+        var fornecedor = await ObterFornecedorEndecreco(id);
+        if (fornecedor is null)
+            return NotFound();
+
+        return PartialView("_DetalhesEndereco",fornecedor);
+    }
+
+    /// <summary>
+    /// Atualiza endereço de um fornecedor
+    /// </summary>
+    /// <param name="id">ID do fornecedor</param>
+    /// <returns></returns>
+    public async Task<IActionResult> AtualizarEndereco(Guid id)
+    {
+        var fornecedor = await ObterFornecedorEndecreco(id);
+        if (fornecedor is null)
+            return NotFound();
+
+        return PartialView("_AtualizarEndereco", new FornecedorViewModel { Endereco = fornecedor.Endereco });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AtualizarEndereco(FornecedorViewModel fornecedorViewModel)
+    {
+        //REMOVE ÍTEMS QUE NÃO FAZEM PARTE DESTE FLUXO, POIS AQUI ESTAMOS TRATANDO APEANS DO ENDEREÇO.
+        //SERIA O CASO DE CRIAR UMA CONTROLLER SÓ PARA O ENDEREÇO.
+        ModelState.Remove("Nome");
+        ModelState.Remove("Documento");
+
+
+        if(!ModelState.IsValid) 
+            return PartialView("_AtualizarEndereco", fornecedorViewModel);
+
+        var nvEndereco = mapper.Map<Endereco>(fornecedorViewModel.Endereco);
+        await enderecoRepository.Atualizar(nvEndereco);
+
+        var url = 
+            Url.Action(
+                "ObterEndereco", "Fornecedores", 
+                new { id = fornecedorViewModel.Endereco.FornecedorId });
+
+
+        return Json(new {succees=true,url});
+
+    }
+
+
     private bool FornecedorExists(Guid id)
     {
-        return repository.ObterPorId(id) is not null;
+        return fornecedorRepository.ObterPorId(id) is not null;
     }
 
     private async Task<FornecedorViewModel> ObterFornecedorEndecreco(Guid id)
     {
-        return mapper.Map<FornecedorViewModel>(await repository.ObterFornecedorEnderecoPorId(id));
+        return mapper.Map<FornecedorViewModel>(await fornecedorRepository.ObterFornecedorEnderecoPorId(id));
     }
     private async Task<FornecedorViewModel> ObterFornecedorProdutosEndereco(Guid id)
     {
-        return mapper.Map<FornecedorViewModel>(await repository.ObterFornecedorProdutosEnderecoPorId(id));
+        return mapper.Map<FornecedorViewModel>(await fornecedorRepository.ObterFornecedorProdutosEnderecoPorId(id));
     }
 }
