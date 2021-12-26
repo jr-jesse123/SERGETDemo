@@ -31,7 +31,7 @@ namespace SERGETStore.App.Controllers
             this.mapper = mapper;
         }
 
-
+        [Route("lista-de-produtos")]
         public async Task<IActionResult> Index()
         {
             var produtos = await produtoRepository.ObterProdutosFornecedores();
@@ -41,13 +41,10 @@ namespace SERGETStore.App.Controllers
         }
 
 
-        //TODO: TRATAR OS NULÁVEIS ATRAVÉS DE FILTERS
-        public async Task<IActionResult> Details(Guid? id)
+        [Route("dados-do-produto/{id:guid}")]
+        public async Task<IActionResult> Details(Guid id)
         {
-            if (id == null)
-                return NotFound();
-
-            var produtoViewModel = await ObterProdutoViewModelComFornecedores(id.Value);
+            var produtoViewModel = await ObterProdutoViewModelComFornecedores(id);
                 
             if (produtoViewModel == null)
                 return NotFound();
@@ -55,6 +52,7 @@ namespace SERGETStore.App.Controllers
             return View(produtoViewModel);
         }
 
+        [Route("novo-produto")]
         public async Task<IActionResult> Create()
         {
             var fornecedores = await ObterFornecedores();
@@ -65,18 +63,12 @@ namespace SERGETStore.App.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("novo-produto")]
         public async Task<IActionResult> Create(ProdutoViewModel produtoViewModel)
         {
 
-            //TODO: ADICIONAR UPLOAD DE IMAGEM
-
             produtoViewModel.Fornecedores = await ObterFornecedores();
             
-
-            //var fornecedor = await fornecedorRepository.ObterPorId(produtoViewModel.FornecedorId);
-            
-            //produtoViewModel.Fornecedor = mapper.Map<FornecedorViewModel>( fornecedor);
-
             var fileName = GetFileName(produtoViewModel.ImagemUpload);
             if (!await UploadArquivo(produtoViewModel.ImagemUpload, fileName))
             {
@@ -89,14 +81,8 @@ namespace SERGETStore.App.Controllers
                 
             }
 
-            
-            //buscar fornecedor pelo id
-
-
             if (!ModelState.IsValid)
                 return View(produtoViewModel);
-
-            
 
             var produto = mapper.Map<Produto>(produtoViewModel);
 
@@ -105,7 +91,7 @@ namespace SERGETStore.App.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //TODO: RETIRAR O NULÁVEL DE TODOS OS EDITS
+        [Route("editar-produto/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
 
@@ -119,6 +105,7 @@ namespace SERGETStore.App.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("editar-produto/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id, ProdutoViewModel produtoViewModel)
         {
             if (id != produtoViewModel.Id)
@@ -170,7 +157,7 @@ namespace SERGETStore.App.Controllers
            
         }
 
-
+        [Route("excluir-produto/{id:guid}")]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -189,6 +176,7 @@ namespace SERGETStore.App.Controllers
         //TODO: ALTERAR DELETES PARA HTTPDELETE
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Route("excluir-produto/{id:guid}")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             
@@ -217,27 +205,12 @@ namespace SERGETStore.App.Controllers
             return produtoViewModel;
         }
 
-        //private async Task<ProdutoViewModel> PopularFornecedores(ProdutoViewModel produto)
-        //{
-        //    //var produto = mapper.Map<ProdutoViewModel>(await produtoRepository.ObterProdutoE_Fornecedor(id));
-        //    var fornecedores = await produtoRepository.ObterTodos();
-        //    produto.Fornecedores = mapper.Map<IEnumerable<FornecedorViewModel>>(fornecedores);
-        //    return produto;
-        //}
-
         private async Task<IEnumerable<FornecedorViewModel>> ObterFornecedores()
         {
             var fornecedores = await fornecedorRepository.ObterTodos();
             var fornecedoresVM = mapper.Map<IEnumerable<FornecedorViewModel>>(fornecedores);
             return fornecedoresVM;
         }
-
-        //private async Task<ProdutoViewModel> ObterProdutoViewModel(Guid id)
-        //{
-        //    var produto = await produtoRepository.ObterPorId(id);
-        //    var produtoVm = mapper.Map<ProdutoViewModel>(produto);
-        //    return produtoVm;
-        //}
 
         private async Task<bool> ProdutoExists(Guid id)
         {
