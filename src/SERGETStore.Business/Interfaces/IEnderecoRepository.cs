@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SERGETStore.Business.Interfaces;
 
-public interface IEnderecoRepository
+public interface IEnderecoRepository : IRepository<Endereco>
 {
     Task<Endereco> ObterEnderecoPorFornecedor(Guid fornecedorId);
 }
