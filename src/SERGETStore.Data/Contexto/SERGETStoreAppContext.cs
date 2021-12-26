@@ -5,7 +5,7 @@ using SERGETStore.Data.Extentions;
 namespace SERGETStore.Data.Contexto;
 public class SERGETStoreAppContext : DbContext
 {
-    public SERGETStoreAppContext(DbContextOptions options) : base(options)    {    }
+    public SERGETStoreAppContext(DbContextOptions<SERGETStoreAppContext> options) : base(options)    {    }
 
     public DbSet<Produto> Produtos { get; set; }
     public DbSet<Endereco> Enderecos { get; set; }
