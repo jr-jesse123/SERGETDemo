@@ -35,7 +35,8 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                <!--TODO: EXIBIR IMAGEM-->
+                <!--TODO: AGRUPAR ESTYLO INLINE PARA CLASSE CSS-->
+                <img src="~/Imagens/@item.Imagem" alt="@item.Imagem" style="width:70px; height:100px" />
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Nome)

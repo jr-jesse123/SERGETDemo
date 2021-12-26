@@ -26,8 +26,8 @@ namespace SERGETStore.App.ViewModels
         public string Descricao { get; set; }
 
         [DisplayName("Imagem do Produto")]
-        public IFormFile ImagemUpload { get; set; } 
-
+        public IFormFile? ImagemUpload { get; set; } 
+        
         public string? Imagem { get; set; } 
         [Required(ErrorMessage = msgCampoObrigatorio)]
         public decimal Valor { get; set; }

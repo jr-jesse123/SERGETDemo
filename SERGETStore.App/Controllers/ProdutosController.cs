@@ -105,12 +105,11 @@ namespace SERGETStore.App.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Edit(Guid? id)
+        //TODO: RETIRAR O NULÁVEL DE TODOS OS EDITS
+        public async Task<IActionResult> Edit(Guid id)
         {
-            if (id == null)
-                return NotFound();
 
-            var produtoViewModel = await ObterProdutoViewModelComFornecedores(id.Value);
+            var produtoViewModel = await ObterProdutoViewModelComFornecedores(id);
 
             if (produtoViewModel == null)
                 return NotFound();
@@ -125,17 +124,40 @@ namespace SERGETStore.App.Controllers
             if (id != produtoViewModel.Id)
                 return NotFound();
 
+            var produtoAtualizacao = await ObterProdutoViewModelComFornecedores(id);
+
+            produtoViewModel.Fornecedor = produtoAtualizacao.Fornecedor;
+
+            produtoViewModel.Imagem = produtoAtualizacao.Imagem;
+
             if (!ModelState.IsValid)
                 return View(produtoViewModel);
 
-            var produto = mapper.Map<Produto>(produtoViewModel);
+            if (produtoViewModel.ImagemUpload is not null)
+            {
+                var fileName = GetFileName(produtoViewModel.ImagemUpload);
+                if (!await UploadArquivo(produtoViewModel.ImagemUpload, fileName))
+                {
+                    ModelState.AddModelError(nameof(produtoViewModel.ImagemUpload), "Não foi possível Fazer o Upload da Imagem");
+                    return View(produtoViewModel);
+                }
+            }
+
+            //TODO: MELHORAR DECLARATIVIDADE DESTE ESCOPO
+            produtoAtualizacao.Nome = produtoViewModel.Nome;
+            produtoAtualizacao.Descricao = produtoViewModel.Descricao;
+            produtoAtualizacao.Valor = produtoViewModel.Valor;
+            produtoAtualizacao.Ativo = produtoViewModel.Ativo;
+
+
+            var produto = mapper.Map<Produto>(produtoAtualizacao);
             try
             {
                 await produtoRepository.Atualizar(produto);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await ProdutoExists(produtoViewModel.Id))
+                if (!await ProdutoExists(produtoAtualizacao.Id))
                 {
                     return NotFound();
                 }
@@ -184,8 +206,11 @@ namespace SERGETStore.App.Controllers
         //TODO: PENSAR EM ENVIAR ESTES MÉTODOS PARA HELPER PÚBLICO PARA SEREM TESTADOS.
         private async Task<ProdutoViewModel> ObterProdutoViewModelComFornecedores(Guid id)
         {
-            var fornecedores = await produtoRepository.ObterTodos();
+            //TODO: VERFICAR CHAMADA DUPLA PARA O BANCO
+            var fornecedores = await fornecedorRepository.ObterTodos();
+
             var prodtuoFornecedor = await produtoRepository.ObterProdutoE_Fornecedor(id);
+
             var produtoViewModel = mapper.Map<ProdutoViewModel>(prodtuoFornecedor);
 
             produtoViewModel.Fornecedores = mapper.Map<IEnumerable<FornecedorViewModel>>(fornecedores);
