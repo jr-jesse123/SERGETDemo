@@ -56,7 +56,8 @@
             <form asp-action="Delete">
                 <input type="hidden" asp-for="Id" />
                 <input type="submit" value="Excluir" class="btn btn-danger" />
-                <a class="btn btn-info" href="javascript:window.history.back();">Voltar</a>
+                <partial name="_BtnVoltar" />
+                @*<a class="btn btn-info" href="javascript:window.history.back();">Voltar</a>*@
             </form>
         </div>
     </div>
