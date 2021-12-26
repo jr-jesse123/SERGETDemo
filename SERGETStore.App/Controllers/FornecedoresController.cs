@@ -149,10 +149,10 @@ public class FornecedoresController : Controller
 
     private async Task<FornecedorViewModel> ObterFornecedorEndecreco(Guid id)
     {
-        return mapper.Map<FornecedorViewModel>(await repository.ObterFornecedorEndereco(id));
+        return mapper.Map<FornecedorViewModel>(await repository.ObterFornecedorEnderecoPorId(id));
     }
     private async Task<FornecedorViewModel> ObterFornecedorProdutosEndereco(Guid id)
     {
-        return mapper.Map<FornecedorViewModel>(await repository.ObterFornecedorEndereco(id));
+        return mapper.Map<FornecedorViewModel>(await repository.ObterFornecedorEnderecoPorId(id));
     }
 }

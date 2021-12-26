@@ -10,6 +10,6 @@ namespace SERGETStore.Business.Interfaces;
 
 public interface IFornecedorRepository : IRepository<Fornecedor>    
 {
-    Task<Fornecedor> ObterFornecedorEndereco(Guid id);
-    Task<Fornecedor> ObterFornecedorProdutosEndereco(Guid id);
+    Task<Fornecedor> ObterFornecedorEnderecoPorId(Guid id);
+    Task<Fornecedor> ObterFornecedorProdutosEnderecoPorId(Guid id);
 }

@@ -34,7 +34,8 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
          return await DbSet.AsNoTracking().Where(predicate).ToListAsync();
     }
 
-    public async Task<TEntity> ObterPorId(Guid id)
+    //todo: verificar estes dois métodos virtuais para leak ab
+    public virtual  async Task<TEntity> ObterPorId(Guid id)
     {
        return await DbSet.Where(e => e.Id == id).FirstOrDefaultAsync(); 
     }
@@ -52,7 +53,7 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
     {
         return await Db.SaveChangesAsync();
     }
-    public async Task<List<TEntity>> ObterTodos()
+    public virtual async Task<List<TEntity>> ObterTodos()
     {
         return await DbSet.ToListAsync();
     }

@@ -24,20 +24,22 @@ namespace SERGETStore.App.ViewModels
         [Required(ErrorMessage = msgCampoObrigatorio, AllowEmptyStrings =false)]
         [StringLength(1000,ErrorMessage = msgErroTamanhoMaximo)]
         public string Descricao { get; set; }
-        
+
         [DisplayName("Imagem do Produto")]
-        public IFormFile ImagemUpload { get; set; }
-        public string Imagem { get; set; }
+        public IFormFile ImagemUpload { get; set; } 
+
+        public string? Imagem { get; set; } 
         [Required(ErrorMessage = msgCampoObrigatorio)]
         public decimal Valor { get; set; }
         [ScaffoldColumn(false)]
         public DateTime DataCadastro { get; set; }
         [DisplayName("Ativo?")]
         public bool Ativo { get; set; }
-        public FornecedorViewModel Fornecedor { get; set; }
+        
+        public FornecedorViewModel? Fornecedor { get; set; }  
         /// <summary>
         /// Lista de fornecedores disponíveis para escolha durante edição
         /// </summary>
-        public IEnumerable<FornecedorViewModel> Fornecedores { get; set; }
+        public IEnumerable<FornecedorViewModel>? Fornecedores { get; set; } 
     }
 }

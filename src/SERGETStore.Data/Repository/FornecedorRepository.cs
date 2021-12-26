@@ -17,16 +17,31 @@ public class FornecedorRepository : Repository<Fornecedor>, IFornecedorRepositor
     {
     }
 
-    
-    public async Task<Fornecedor> ObterFornecedorEndereco(Guid id)
+    public override async Task<List<Fornecedor>> ObterTodos()
+    {
+        return await Db.Fornecedores.AsNoTracking().Include(f => f.Endereco).ToListAsync();
+    }
+
+    //TODO: VERIFICAR A ESPECIALIZAÇÃO DESTES DOIS MÉDOTOS, TEM CARA DE LEAK AB
+    public override async Task<Fornecedor> ObterPorId(Guid id)
+    {
+        return await Db.Fornecedores.Include(f => f.Endereco).Where(e => e.Id == id).FirstOrDefaultAsync();
+    }
+
+
+    public async Task<Fornecedor> ObterFornecedorEnderecoPorId(Guid id)
     {
         var fornecedores_enderecos = 
             Db.Fornecedores.AsNoTracking().Include(c => c.Endereco);
 
         return await fornecedores_enderecos.FirstOrDefaultAsync(c => c.Id == id);
     }
-
-    public Task<Fornecedor> ObterFornecedorProdutosEndereco(Guid id)
+    /// <summary>
+    /// Retorna O primeiro Fornecedor com a id do paramêtro
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public Task<Fornecedor> ObterFornecedorProdutosEnderecoPorId(Guid id)
     {
         var output =
             Db.Fornecedores.AsNoTracking()

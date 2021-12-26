@@ -23,4 +23,8 @@
     <ProjectReference Include="..\src\SERGETStore.Data\SERGETStore.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Imagens\" />
+  </ItemGroup>
+
 </Project>

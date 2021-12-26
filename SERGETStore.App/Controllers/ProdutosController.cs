@@ -71,18 +71,40 @@ namespace SERGETStore.App.Controllers
             //TODO: ADICIONAR UPLOAD DE IMAGEM
 
             produtoViewModel.Fornecedores = await ObterFornecedores();
+            
+
+            //var fornecedor = await fornecedorRepository.ObterPorId(produtoViewModel.FornecedorId);
+            
+            //produtoViewModel.Fornecedor = mapper.Map<FornecedorViewModel>( fornecedor);
+
+            var fileName = GetFileName(produtoViewModel.ImagemUpload);
+            if (!await UploadArquivo(produtoViewModel.ImagemUpload, fileName))
+            {
+                ModelState.AddModelError(nameof(produtoViewModel.ImagemUpload), "Não foi possível Fazer o Upload da Imagem");
+                return View(produtoViewModel);
+            }
+            else
+            {
+                produtoViewModel.Imagem = fileName;
+                
+            }
+
+            
+            //buscar fornecedor pelo id
+
 
             if (!ModelState.IsValid)
                 return View(produtoViewModel);
 
+            
+
             var produto = mapper.Map<Produto>(produtoViewModel);
 
             await produtoRepository.Adiciontar(produto);
-            
-            return View(produtoViewModel);
+
+            return RedirectToAction(nameof(Index));
         }
 
-        
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -198,7 +220,34 @@ namespace SERGETStore.App.Controllers
         }
 
 
-        
+        private string GetFileName(IFormFile arquivo)
+        {
+            return Guid.NewGuid() + "_" + arquivo.FileName;
+        }
+
+
+
+
+        /// <summary>
+        /// Tenta Realizar Upload do arquivo e retorna true em caso de sucesso
+        /// </summary>
+        /// <param name="arquivo"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        private async Task<bool> UploadArquivo(IFormFile arquivo, string fileName)
+        {
+            //TODO: SEPARAR VALIDAÇÃO DO ARQUIVAMENTO EM FUNÇÕES DISTINTAS
+
+            //TODO: ADICIONAR VALIDAÇÃO DE TAMANHO MÁXIMO NESTE ARQUIVO
+            if (arquivo.Length <= 0) return false;
+            
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Imagens", fileName);
+            using (var stream = new FileStream(path, FileMode.Create))
+            await arquivo.CopyToAsync(stream);
+
+            return true;
+        }
 
     }
 }
+
