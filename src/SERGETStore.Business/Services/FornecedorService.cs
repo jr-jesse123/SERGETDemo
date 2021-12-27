@@ -25,50 +25,44 @@ namespace SERGETStore.Business.Interfaces
             var validator = new FornecedorValidation();
             var result = validator.Validate(fornecedor);
 
-            if (!ExecutarValidação(new FornecedorValidation(),fornecedor))
-            {
+            if (!ExecutarValidação(new FornecedorValidation(),fornecedor) 
+                || !ExecutarValidação(new EnderecoValidation(), fornecedor.Endereco)) 
                 return;
-            }
+            
 
-            var documentoExistente = await fornecedorRepository.Buscar(f => f.Documento == fornecedor.Documento);
+            var documentosIguais = await fornecedorRepository.Buscar(f => f.Documento == fornecedor.Documento);
 
-            if (documentoExistente.Any())
+            if (documentosIguais.Any())
             {
                 Notificar("Já existe um fornecedor com esete documento informado.");
                 return;
             }
 
             await fornecedorRepository.Adiciontar(fornecedor);
-
-
-
         }
 
         public async Task Atualizar(Fornecedor fornecedor)
         {
             if (!ExecutarValidação(new FornecedorValidation(), fornecedor))
-            {
                 return;
-            }
+            
+            var documentoIgual = await fornecedorRepository.Buscar(f => f.Documento == fornecedor.Documento && f.Id != fornecedor.Id);
 
-            var documentoExistente = await fornecedorRepository.Buscar(f => f.Documento == fornecedor.Documento && f.Id != fornecedor.Id);
-            if (documentoExistente.Any())
+            if (documentoIgual.Any())
             {
                 Notificar("Já existe um fornecedor com esete documento informado.");
                 return;
             }
 
             await fornecedorRepository.Atualizar(fornecedor);
-
         }
 
-        public async Task AtualizarEndereco(Endereco fornecedor)
+        public async Task AtualizarEndereco(Endereco endereco)
         {
-            if (!ExecutarValidação(new EnderecoValidation(), fornecedor))
-            {
+            if (!ExecutarValidação(new EnderecoValidation(), endereco))
                 return;
-            }
-
+            
+            await enderecoRepository.Atualizar(endereco);
         }
 
         public void Dispose()
@@ -83,10 +77,17 @@ namespace SERGETStore.Business.Interfaces
             if (fornecedorE_Produtos.Produtos.Any())
             {
                 Notificar("O fornecedor possui produtos cadastrados!");
+                return ;
             }
 
+            //remove endereços
+            var endereco = await enderecoRepository.ObterEnderecoPorFornecedor(id);
 
+            if (endereco != null)
+                await enderecoRepository.Remover(endereco.Id);
+            
+            //remove fornecedor
+            await fornecedorRepository.Remover(id);
         }
-
     }
 }
