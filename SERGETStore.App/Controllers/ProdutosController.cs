@@ -1,13 +1,7 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using SERGETStore.App.Data;
 using SERGETStore.App.ViewModels;
 using SERGETStore.Business.Interfaces;
 using SERGETStore.Business.Models;
@@ -19,15 +13,18 @@ namespace SERGETStore.App.Controllers
     {
         private readonly IProdutoRepository produtoRepository;
         private readonly IFornecedorRepository fornecedorRepository;
+        private readonly IProdutoService produtoService;
         private readonly IMapper mapper;
 
         public ProdutosController(
                 IProdutoRepository produtoRepository,
                 IFornecedorRepository fornecedorRepository,
+                IProdutoService produtoService,
                 IMapper mapper)
         {
             this.produtoRepository = produtoRepository;
             this.fornecedorRepository = fornecedorRepository;
+            this.produtoService = produtoService;
             this.mapper = mapper;
         }
 
@@ -86,7 +83,8 @@ namespace SERGETStore.App.Controllers
 
             var produto = mapper.Map<Produto>(produtoViewModel);
 
-            await produtoRepository.Adiciontar(produto);
+            
+            await produtoService.Adicionar(produto);
 
             return RedirectToAction(nameof(Index));
         }
@@ -140,7 +138,7 @@ namespace SERGETStore.App.Controllers
             var produto = mapper.Map<Produto>(produtoAtualizacao);
             try
             {
-                await produtoRepository.Atualizar(produto);
+                await produtoService.Atualizar(produto);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -185,7 +183,7 @@ namespace SERGETStore.App.Controllers
             if (produtoVM is null)
                 return NotFound();
 
-            await produtoRepository.Remover(id);
+            await produtoService.Remover(id);
 
             return RedirectToAction(nameof(Index));
         }

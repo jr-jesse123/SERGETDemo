@@ -12,13 +12,19 @@ namespace SERGETStore.App.Controllers;
 public class FornecedoresController : Controller
 {
     private readonly IFornecedorRepository fornecedorRepository;
-    private readonly IEnderecoRepository enderecoRepository;
+    //private readonly IEnderecoRepository enderecoRepository;
+    private readonly IFornecedorService fornecedorService;
     private readonly IMapper mapper;
-    public FornecedoresController(IFornecedorRepository repository, IMapper mapper, IEnderecoRepository enderecoRepository)
+    
+    public FornecedoresController(IFornecedorRepository repository, 
+                                  IMapper mapper, 
+                                  //IEnderecoRepository enderecoRepository, 
+                                  IFornecedorService fornecedorService)
     {
         this.fornecedorRepository = repository;
         this.mapper = mapper;
-        this.enderecoRepository = enderecoRepository;
+        //this.enderecoRepository = enderecoRepository;
+        this.fornecedorService = fornecedorService;
     }
     [Route("lista-de-fornecedores")]
     public async Task<IActionResult> Index()
@@ -60,7 +66,8 @@ public class FornecedoresController : Controller
             return View(fornecedorViewModel);
 
         var fornecedor = mapper.Map<Fornecedor>(fornecedorViewModel);
-        await fornecedorRepository.Adiciontar(fornecedor);
+        await fornecedorService.Adicionar(fornecedor);
+            
 
         return RedirectToAction(nameof(Index));
     }
@@ -93,7 +100,7 @@ public class FornecedoresController : Controller
 
         try
         {
-            await fornecedorRepository.Atualizar(fornecedor);
+            await fornecedorService.Atualizar(fornecedor);
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -133,7 +140,7 @@ public class FornecedoresController : Controller
         if (fornecedorViewModel is null)
             return NotFound();
 
-        await fornecedorRepository.Remover(id);
+        await fornecedorService.Remover(id);
 
         return RedirectToAction(nameof(Index));
     }
@@ -179,7 +186,7 @@ public class FornecedoresController : Controller
             return PartialView("_AtualizarEndereco", fornecedorViewModel);
 
         var nvEndereco = mapper.Map<Endereco>(fornecedorViewModel.Endereco);
-        await enderecoRepository.Atualizar(nvEndereco);
+        await fornecedorService.AtualizarEndereco(nvEndereco);
 
         var url = 
             Url.Action(
