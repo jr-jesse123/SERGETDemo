@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using DevIO.Business.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SERGETStore.App.Data;
 using SERGETStore.App.ViewModels;
 using SERGETStore.Business.Interfaces;
+using SERGETStore.Business.Models;
 
 namespace SERGETStore.App.Controllers
 {

@@ -1,5 +1,5 @@
-﻿using DevIO.Business.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using SERGETStore.Business.Models;
 using SERGETStore.Data.Extentions;
 
 namespace SERGETStore.Data.Contexto;

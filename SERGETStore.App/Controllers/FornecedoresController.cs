@@ -1,10 +1,10 @@
 ﻿#nullable disable
 using AutoMapper;
-using DevIO.Business.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SERGETStore.App.ViewModels;
 using SERGETStore.Business.Interfaces;
+using SERGETStore.Business.Models;
 
 namespace SERGETStore.App.Controllers;
 

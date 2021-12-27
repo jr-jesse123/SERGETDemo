@@ -1,6 +1,6 @@
-﻿using DevIO.Business.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SERGETStore.Business.Models;
 
 namespace DevIO.Data.Mappings
 {

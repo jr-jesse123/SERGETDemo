@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DevIO.Business.Models
+﻿namespace SERGETStore.Business.Models
 {
     public class Endereco : Entity
     {

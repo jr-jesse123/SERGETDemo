@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using DevIO.Business.Models;
 using SERGETStore.App.ViewModels;
+using SERGETStore.Business.Models;
 
 namespace SERGETStore.App.AutoMapper
 {

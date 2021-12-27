@@ -1,7 +1,8 @@
-﻿using System;
+﻿using DevIO.Business.Models;
+using System;
 using System.Collections.Generic;
 
-namespace DevIO.Business.Models
+namespace SERGETStore.Business.Models
 {
     public class Fornecedor : Entity
     {
