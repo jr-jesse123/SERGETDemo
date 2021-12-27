@@ -9,7 +9,7 @@ using SERGETStore.Business.Models;
 namespace SERGETStore.App.Controllers
 {
 
-    public class ProdutosController : Controller
+    public class ProdutosController : BaseController
     {
         private readonly IProdutoRepository produtoRepository;
         private readonly IFornecedorRepository fornecedorRepository;
@@ -20,7 +20,8 @@ namespace SERGETStore.App.Controllers
                 IProdutoRepository produtoRepository,
                 IFornecedorRepository fornecedorRepository,
                 IProdutoService produtoService,
-                IMapper mapper)
+                IMapper mapper,
+                INotificador notificador) : base(notificador)
         {
             this.produtoRepository = produtoRepository;
             this.fornecedorRepository = fornecedorRepository;
@@ -86,6 +87,10 @@ namespace SERGETStore.App.Controllers
             
             await produtoService.Adicionar(produto);
 
+            if (!OperacaoValida())
+                return View(produtoViewModel);
+            
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -139,6 +144,9 @@ namespace SERGETStore.App.Controllers
             try
             {
                 await produtoService.Atualizar(produto);
+                if (!OperacaoValida())
+                    return View(produtoViewModel);
+
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -156,12 +164,9 @@ namespace SERGETStore.App.Controllers
         }
 
         [Route("excluir-produto/{id:guid}")]
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            if (id == null)
-                return NotFound();
-
-            var produtoVM = await ObterProdutoViewModelComFornecedores(id.Value);
+            var produtoVM = await ObterProdutoViewModelComFornecedores(id);
 
             if (produtoVM is null)
                  return NotFound();
@@ -176,14 +181,17 @@ namespace SERGETStore.App.Controllers
         [ValidateAntiForgeryToken]
         [Route("excluir-produto/{id:guid}")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            
+        {   
             var produtoVM = await ObterProdutoViewModelComFornecedores(id);
 
             if (produtoVM is null)
                 return NotFound();
 
             await produtoService.Remover(id);
+            
+            if (!OperacaoValida())
+                return View(produtoVM);
+
 
             return RedirectToAction(nameof(Index));
         }

@@ -9,7 +9,7 @@ using SERGETStore.Business.Models;
 namespace SERGETStore.App.Controllers;
 
 
-public class FornecedoresController : Controller
+public class FornecedoresController : BaseController
 {
     private readonly IFornecedorRepository fornecedorRepository;
     private readonly IFornecedorService fornecedorService;
@@ -17,7 +17,8 @@ public class FornecedoresController : Controller
     
     public FornecedoresController(IFornecedorRepository repository, 
                                   IMapper mapper, 
-                                  IFornecedorService fornecedorService)
+                                  IFornecedorService fornecedorService,
+                                  INotificador notificador) : base(notificador)
     {
         this.fornecedorRepository = repository;
         this.mapper = mapper;
@@ -63,7 +64,8 @@ public class FornecedoresController : Controller
 
         var fornecedor = mapper.Map<Fornecedor>(fornecedorViewModel);
         await fornecedorService.Adicionar(fornecedor);
-            
+        if (!OperacaoValida())
+            return View(fornecedorViewModel);
 
         return RedirectToAction(nameof(Index));
     }
@@ -97,6 +99,8 @@ public class FornecedoresController : Controller
         try
         {
             await fornecedorService.Atualizar(fornecedor);
+            if (!OperacaoValida())
+                return View(fornecedorViewModel);
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -137,6 +141,8 @@ public class FornecedoresController : Controller
             return NotFound();
 
         await fornecedorService.Remover(id);
+        if (!OperacaoValida())
+            return View(fornecedorViewModel);
 
         return RedirectToAction(nameof(Index));
     }
@@ -183,6 +189,8 @@ public class FornecedoresController : Controller
 
         var nvEndereco = mapper.Map<Endereco>(fornecedorViewModel.Endereco);
         await fornecedorService.AtualizarEndereco(nvEndereco);
+        if (!OperacaoValida())
+            return View(fornecedorViewModel);
 
         var url = 
             Url.Action(
