@@ -1,0 +1,34 @@
+﻿@if(ViewData.ModelState.ErrorCount > 0)
+{
+    //TODO: criar classe para este padding top
+    <div class="paragraph"></div>  
+    @*<div class="alert alert-danger">
+        <button type="button" class="close" data-bs-dismiss="alert">x</button>
+        <h3 id="msgRetorno" class="paragraph-2">Opa! Algo deu errado :(</h3>
+        <div  asp-validation-summary="ModelOnly" class="text-danger paragraph-2"></div>
+    </div>*@
+
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div  asp-validation-summary="ModelOnly" class="text-danger paragraph-2"></div>
+    </div>
+}
+
+@if(!string.IsNullOrEmpty(ViewBag.Sucesso))
+{
+    <div class="paragraph"></div>
+    <div id="msg_box" class="alert alert-success alert-dismissible fade show" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <h3 id="msgRetorno">@ViewBag.Sucesso</h3>
+    </div>
+}
+
+
+@if(TempData["Sucesso"] != null)
+{
+    <div class="paragraph"></div>
+    <div id="msg_box" class="alert alert-success alert-dismissible fade show" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <h4 id="msgRetorno">@Html.Raw(TempData["Sucesso"].ToString())</h4>
+    </div>
+}

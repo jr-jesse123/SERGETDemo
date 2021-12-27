@@ -193,6 +193,9 @@ namespace SERGETStore.App.Controllers
                 return View(produtoVM);
 
 
+            TempData["Sucesso"] = "Produto excluído com sucesso!";
+
+
             return RedirectToAction(nameof(Index));
         }
 

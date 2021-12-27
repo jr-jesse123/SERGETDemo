@@ -67,6 +67,8 @@ public class FornecedoresController : BaseController
         if (!OperacaoValida())
             return View(fornecedorViewModel);
 
+        TempData["Sucesso"] = "Fornecedor excluído com sucesso";
+
         return RedirectToAction(nameof(Index));
     }
 
