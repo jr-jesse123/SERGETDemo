@@ -12,18 +12,15 @@ namespace SERGETStore.App.Controllers;
 public class FornecedoresController : Controller
 {
     private readonly IFornecedorRepository fornecedorRepository;
-    //private readonly IEnderecoRepository enderecoRepository;
     private readonly IFornecedorService fornecedorService;
     private readonly IMapper mapper;
     
     public FornecedoresController(IFornecedorRepository repository, 
                                   IMapper mapper, 
-                                  //IEnderecoRepository enderecoRepository, 
                                   IFornecedorService fornecedorService)
     {
         this.fornecedorRepository = repository;
         this.mapper = mapper;
-        //this.enderecoRepository = enderecoRepository;
         this.fornecedorService = fornecedorService;
     }
     [Route("lista-de-fornecedores")]
@@ -32,7 +29,6 @@ public class FornecedoresController : Controller
         var produtos = await fornecedorRepository.ObterTodos();
         var produtosVM = mapper.Map<IEnumerable<FornecedorViewModel>>(produtos);
         return View(produtosVM);
-        //return View(await repository.ObterTodos());
     }
 
     [Route("daods-do-fornecedor/{id:guid}")]
