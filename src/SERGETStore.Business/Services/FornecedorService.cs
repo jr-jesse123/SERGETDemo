@@ -8,11 +8,15 @@ namespace SERGETStore.Business.Interfaces
 
         private readonly IFornecedorRepository fornecedorRepository;
         private readonly IEnderecoRepository enderecoRepository;
+        private readonly INotificador notificador;
 
-        public FornecedorService(IFornecedorRepository fornecedorRepository, IEnderecoRepository enderecoRepository)
+        public FornecedorService(IFornecedorRepository fornecedorRepository, 
+                                    IEnderecoRepository enderecoRepository, 
+                                    INotificador notificador) : base(notificador)
         {
             this.fornecedorRepository = fornecedorRepository;
             this.enderecoRepository = enderecoRepository;
+            this.notificador = notificador;
         }
 
         public async Task Adicionar(Fornecedor fornecedor)
@@ -67,6 +71,16 @@ namespace SERGETStore.Business.Interfaces
 
         }
 
+        public Task AtualizarEndereco(Fornecedor fornecedor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task Remover(Guid id)
         {
             var fornecedorE_Produtos = await fornecedorRepository.ObterFornecedorProdutosEnderecoPorId(id);
@@ -77,6 +91,11 @@ namespace SERGETStore.Business.Interfaces
             }
 
 
+        }
+
+        public async Task Remover(Fornecedor fornecedor)
+        {
+            fornecedorRepository?.Dispose();
         }
     }
 }

@@ -6,7 +6,7 @@ namespace SERGETStore.Business.Interfaces
     public class ProdutoService : BaseService, IProdutoService
     {
         public IProdutoRepository ProdutoRepository { get; }
-        public ProdutoService(IProdutoRepository produtoRepository)
+        public ProdutoService(IProdutoRepository produtoRepository, INotificador notificador) : base(notificador)
         {
             ProdutoRepository = produtoRepository;
         }
@@ -29,6 +29,11 @@ namespace SERGETStore.Business.Interfaces
         public async Task Remover(Guid id)
         {
             await ProdutoRepository.Remover(id);
+        }
+
+        public void Dispose()
+        {
+            ProdutoRepository.Dispose();
         }
     }
 }

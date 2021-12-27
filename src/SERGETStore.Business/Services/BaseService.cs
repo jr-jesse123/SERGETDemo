@@ -2,6 +2,7 @@
 using FluentValidation.Results;
 using SERGETStore.Business.Interfaces;
 using SERGETStore.Business.Models;
+using SERGETStore.Business.Notificacoes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,16 @@ namespace SERGETStore.Business.Interfaces
 {
     public abstract class BaseService
     {
+        private readonly INotificador notificador;
+
+        public BaseService(INotificador notificador)
+        {
+            this.notificador = notificador;
+        }
+
         protected void Notificar(string mensagem)
         {
-            // propagar erro até apresentação
+            notificador.Handle(new Notificacao(mensagem));
         }
 
         protected void Notificar(ValidationResult validationResult)

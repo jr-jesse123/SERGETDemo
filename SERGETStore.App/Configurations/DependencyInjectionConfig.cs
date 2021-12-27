@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using SERGETStore.App.Data;
 using SERGETStore.Business.Interfaces;
+using SERGETStore.Business.Notificacoes;
 using SERGETStore.Data.Repository;
 using System.Globalization;
 
@@ -17,6 +18,11 @@ namespace SERGETStore.App.Extentions
             services.AddScoped<IFornecedorRepository, FornecedorRepository>();
             services.AddScoped<IEnderecoRepository, EnderecoRepository>();
             services.AddSingleton<IValidationAttributeAdapterProvider, MoedaValidationAttributeAdapterProvider>();
+
+
+            services.AddScoped<INotificador, Notificador>()
+                .AddScoped<IFornecedorService, FornecedorService>()
+                .AddScoped<IProdutoService, ProdutoService>();
 
             return services;
 
