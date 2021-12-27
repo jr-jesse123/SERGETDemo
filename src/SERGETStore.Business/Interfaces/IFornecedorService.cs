@@ -2,7 +2,7 @@
 
 namespace SERGETStore.Business.Interfaces;
 
-internal interface IFornecedorService
+public interface IFornecedorService : IDisposable
 {
     Task Adicionar(Fornecedor fornecedor);
     Task Atualizar(Fornecedor fornecedor);

@@ -2,7 +2,7 @@
 
 namespace SERGETStore.Business.Interfaces;
 
-internal interface IProdutoService
+public interface IProdutoService : IDisposable
 {
     Task Adicionar(Produto produto);
     Task Atualizar(Produto produto);
