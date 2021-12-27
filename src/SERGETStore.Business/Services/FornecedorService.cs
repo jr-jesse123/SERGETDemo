@@ -71,14 +71,9 @@ namespace SERGETStore.Business.Interfaces
 
         }
 
-        public Task AtualizarEndereco(Fornecedor fornecedor)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Dispose()
         {
-            throw new NotImplementedException();
+            fornecedorRepository?.Dispose();
         }
 
         public async Task Remover(Guid id)
@@ -93,9 +88,5 @@ namespace SERGETStore.Business.Interfaces
 
         }
 
-        public async Task Remover(Fornecedor fornecedor)
-        {
-            fornecedorRepository?.Dispose();
-        }
     }
 }
