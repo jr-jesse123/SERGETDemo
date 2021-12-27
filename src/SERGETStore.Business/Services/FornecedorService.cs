@@ -5,6 +5,16 @@ namespace SERGETStore.Business.Interfaces
 {
     public class FornecedorService : BaseService, IFornecedorService
     {
+
+        private readonly IFornecedorRepository fornecedorRepository;
+        private readonly IEnderecoRepository enderecoRepository;
+
+        public FornecedorService(IFornecedorRepository fornecedorRepository, IEnderecoRepository enderecoRepository)
+        {
+            this.fornecedorRepository = fornecedorRepository;
+            this.enderecoRepository = enderecoRepository;
+        }
+
         public async Task Adicionar(Fornecedor fornecedor)
         {
             //validar estado
@@ -16,6 +26,17 @@ namespace SERGETStore.Business.Interfaces
                 return;
             }
 
+            var documentoExistente = await fornecedorRepository.Buscar(f => f.Documento == fornecedor.Documento);
+
+            if (documentoExistente.Any())
+            {
+                Notificar("Já existe um fornecedor com esete documento informado.");
+                return;
+            }
+
+            await fornecedorRepository.Adiciontar(fornecedor);
+
+
 
         }
 
@@ -26,23 +47,35 @@ namespace SERGETStore.Business.Interfaces
                 return;
             }
 
+            var documentoExistente = await fornecedorRepository.Buscar(f => f.Documento == fornecedor.Documento && f.Id != fornecedor.Id);
+            if (documentoExistente.Any())
+            {
+                Notificar("Já existe um fornecedor com esete documento informado.");
+                return;
+            }
+
+            await fornecedorRepository.Atualizar(fornecedor);
+
         }
 
-        public async Task AtualizarEndereco(Fornecedor fornecedor)
+        public async Task AtualizarEndereco(Endereco fornecedor)
         {
-            if (!ExecutarValidação(new FornecedorValidation(), fornecedor))
+            if (!ExecutarValidação(new EnderecoValidation(), fornecedor))
             {
                 return;
             }
 
         }
 
-        public async Task Remover(Fornecedor fornecedor)
+        public async Task Remover(Guid id)
         {
-            if (!ExecutarValidação(new FornecedorValidation(), fornecedor))
+            var fornecedorE_Produtos = await fornecedorRepository.ObterFornecedorProdutosEnderecoPorId(id);
+
+            if (fornecedorE_Produtos.Produtos.Any())
             {
-                return;
+                Notificar("O fornecedor possui produtos cadastrados!");
             }
+
 
         }
     }

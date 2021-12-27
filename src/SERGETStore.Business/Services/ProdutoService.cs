@@ -1,22 +1,34 @@
 ﻿using SERGETStore.Business.Models;
+using SERGETStore.Business.Models.Validations;
 
 namespace SERGETStore.Business.Interfaces
 {
     public class ProdutoService : BaseService, IProdutoService
     {
-        public Task Adicionar(Produto produto)
+        public IProdutoRepository ProdutoRepository { get; }
+        public ProdutoService(IProdutoRepository produtoRepository)
         {
-            throw new NotImplementedException();
+            ProdutoRepository = produtoRepository;
         }
 
-        public Task Atualizar(Produto produto)
+
+        public async Task Adicionar(Produto produto)
         {
-            throw new NotImplementedException();
+            if (!ExecutarValidação(new ProdutoValidation(), produto)) return;
+
+            await ProdutoRepository.Adiciontar(produto);
         }
 
-        public Task Remover(Guid guid)
+        public async Task Atualizar(Produto produto)
         {
-            throw new NotImplementedException();
+            if (!ExecutarValidação(new ProdutoValidation(), produto)) return;
+
+            await ProdutoRepository.Atualizar(produto);
+        }
+
+        public async Task Remover(Guid id)
+        {
+            await ProdutoRepository.Remover(id);
         }
     }
 }
