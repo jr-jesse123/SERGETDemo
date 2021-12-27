@@ -1,14 +1,16 @@
 ﻿#nullable disable
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SERGETStore.App.Extentions;
 using SERGETStore.App.ViewModels;
 using SERGETStore.Business.Interfaces;
 using SERGETStore.Business.Models;
 
 namespace SERGETStore.App.Controllers
 {
-
+    //[Authorize]
     public class ProdutosController : BaseController
     {
         private readonly IProdutoRepository produtoRepository;
@@ -29,6 +31,7 @@ namespace SERGETStore.App.Controllers
             this.mapper = mapper;
         }
 
+        [AllowAnonymous]
         [Route("lista-de-produtos")]
         public async Task<IActionResult> Index()
         {
@@ -38,7 +41,7 @@ namespace SERGETStore.App.Controllers
             return View(produtosViewModel);
         }
 
-
+        [AllowAnonymous]
         [Route("dados-do-produto/{id:guid}")]
         public async Task<IActionResult> Details(Guid id)
         {
@@ -50,6 +53,7 @@ namespace SERGETStore.App.Controllers
             return View(produtoViewModel);
         }
 
+        //[ClaimsAuthorize("Produto","Adicionar")]
         [Route("novo-produto")]
         public async Task<IActionResult> Create()
         {
@@ -58,7 +62,7 @@ namespace SERGETStore.App.Controllers
             return View(produtoViewModel);
         }
 
-        
+        //[ClaimsAuthorize("Produto", "Adicionar")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("novo-produto")]
@@ -94,6 +98,7 @@ namespace SERGETStore.App.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        //[ClaimsAuthorize("Produto", "Editar")]
         [Route("editar-produto/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
@@ -109,6 +114,7 @@ namespace SERGETStore.App.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("editar-produto/{id:guid}")]
+        //[ClaimsAuthorize("Produto", "Editar")]
         public async Task<IActionResult> Edit(Guid id, ProdutoViewModel produtoViewModel)
         {
             if (id != produtoViewModel.Id)
@@ -164,6 +170,7 @@ namespace SERGETStore.App.Controllers
         }
 
         [Route("excluir-produto/{id:guid}")]
+        //[ClaimsAuthorize("Produto", "Excluir")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var produtoVM = await ObterProdutoViewModelComFornecedores(id);
@@ -180,6 +187,7 @@ namespace SERGETStore.App.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Route("excluir-produto/{id:guid}")]
+        //[ClaimsAuthorize("Produto", "Excluir")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {   
             var produtoVM = await ObterProdutoViewModelComFornecedores(id);

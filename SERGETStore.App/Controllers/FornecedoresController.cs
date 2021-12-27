@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SERGETStore.App.ViewModels;
@@ -8,7 +9,7 @@ using SERGETStore.Business.Models;
 
 namespace SERGETStore.App.Controllers;
 
-
+//[Authorize]
 public class FornecedoresController : BaseController
 {
     private readonly IFornecedorRepository fornecedorRepository;
@@ -24,6 +25,7 @@ public class FornecedoresController : BaseController
         this.mapper = mapper;
         this.fornecedorService = fornecedorService;
     }
+    [AllowAnonymous]
     [Route("lista-de-fornecedores")]
     public async Task<IActionResult> Index()
     {
@@ -32,6 +34,7 @@ public class FornecedoresController : BaseController
         return View(produtosVM);
     }
 
+    [AllowAnonymous]
     [Route("daods-do-fornecedor/{id:guid}")]
     public async Task<IActionResult> Details(Guid id)
     {
